@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace SearchingSort
 {
-    class WeatherData
+    public class WeatherData
     {
-        Double Year { get; set; }
+        public Double Year { get; set; }
         Double Month { get; set; }
         Double WS1_AF { get; set; }
         Double WS1_Rain { get; set; }
