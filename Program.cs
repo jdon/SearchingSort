@@ -11,12 +11,12 @@ namespace SearchingSort
         static void Main(string[] args)
         {
             FileManager fm = new FileManager();
-            fm.inputFiles("");
+            fm.inputFiles(@"C:\Users\jdon\Downloads\CMP1124M_Weather_Data");
             foreach (WeatherData wd in fm.WeatherData1)
             {
                 Console.WriteLine(wd.ToString());
             }
-            Console.ReadLine();
+            Console.ReadLine(); 
 
         }
     }

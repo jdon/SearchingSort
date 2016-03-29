@@ -33,18 +33,18 @@ namespace SearchingSort
 
         public void inputFiles(String Dir)
         {
-            StreamReader YearFile = new StreamReader(@"C:\Users\jdon\Downloads\CMP1124M_Weather_Data\Year.txt");
-            StreamReader MonthFile = new StreamReader(@"C:\Users\jdon\Downloads\CMP1124M_Weather_Data\Month.txt");
-            StreamReader WS1_AFFile = new StreamReader(@"C:\Users\jdon\Downloads\CMP1124M_Weather_Data\WS1_AF.txt");
-            StreamReader WS1_RainFile = new StreamReader(@"C:\Users\jdon\Downloads\CMP1124M_Weather_Data\WS1_Rain.txt");
-            StreamReader WS1_SunFile = new StreamReader(@"C:\Users\jdon\Downloads\CMP1124M_Weather_Data\WS1_Sun.txt");
-            StreamReader WS1_TMaxFile = new StreamReader(@"C:\Users\jdon\Downloads\CMP1124M_Weather_Data\WS1_TMax.txt");
-            StreamReader WS1_TMinFile = new StreamReader(@"C:\Users\jdon\Downloads\CMP1124M_Weather_Data\WS1_TMin.txt");
-            StreamReader WS2_AFFile = new StreamReader(@"C:\Users\jdon\Downloads\CMP1124M_Weather_Data\WS2_AF.txt");
-            StreamReader WS2_RainFile = new StreamReader(@"C:\Users\jdon\Downloads\CMP1124M_Weather_Data\WS2_Rain.txt");
-            StreamReader WS2_SunFile = new StreamReader(@"C:\Users\jdon\Downloads\CMP1124M_Weather_Data\WS2_Sun.txt");
-            StreamReader WS2_TMaxFile = new StreamReader(@"C:\Users\jdon\Downloads\CMP1124M_Weather_Data\WS2_TMax.txt");
-            StreamReader WS2_TMinFile = new StreamReader(@"C:\Users\jdon\Downloads\CMP1124M_Weather_Data\WS2_TMin.txt");
+            StreamReader YearFile = new StreamReader(Dir+@"\Year.txt");
+            StreamReader MonthFile = new StreamReader(Dir+@"\Month.txt");
+            StreamReader WS1_AFFile = new StreamReader(Dir+@"\WS1_AF.txt");
+            StreamReader WS1_RainFile = new StreamReader(Dir+@"\WS1_Rain.txt");
+            StreamReader WS1_SunFile = new StreamReader(Dir+@"\WS1_Sun.txt");
+            StreamReader WS1_TMaxFile = new StreamReader(Dir+@"\WS1_TMax.txt");
+            StreamReader WS1_TMinFile = new StreamReader(Dir+@"\WS1_TMin.txt");
+            StreamReader WS2_AFFile = new StreamReader(Dir+@"\WS2_AF.txt");
+            StreamReader WS2_RainFile = new StreamReader(Dir+@"\WS2_Rain.txt");
+            StreamReader WS2_SunFile = new StreamReader(Dir+@"\WS2_Sun.txt");
+            StreamReader WS2_TMaxFile = new StreamReader(Dir+@"\WS2_TMax.txt");
+            StreamReader WS2_TMinFile = new StreamReader(Dir+@"\WS2_TMin.txt");
             // all files have the same amount of lines
             for(Double x = 0; x<= 1021; x++)
             {
