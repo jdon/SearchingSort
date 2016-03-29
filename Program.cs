@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,6 +11,39 @@ namespace SearchingSort
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("Select where your files are\n");
+            string selection = "0";
+            do
+            {
+                Console.WriteLine("1. Current directory");
+                Console.WriteLine("2. Enter a directory");
+                Console.WriteLine("3. Quit");
+                selection = Console.ReadLine();
+
+                switch (selection)
+                {
+                    case "1":
+                        FileManager fm = new FileManager();
+                        if (fm.inputFiles(Directory.GetCurrentDirectory()) == false)
+                        {
+                            Console.WriteLine("Files not found!");
+                            break;
+                        }
+                        else
+                        {
+                            DisplayMainMenu(fm);
+                        }
+                        break;
+                    case "2":
+                        DisplayDirectoryMenu();
+                        break;
+                    default:
+                        //Console.WriteLine("Selection not correct");
+                        break;
+                        // etc..
+                }
+            } while (selection != "3");
+            /*
             FileManager fm = new FileManager();
             fm.inputFiles(@"C:\Users\jdon\Downloads\CMP1124M_Weather_Data");
             WeatherData[] WeatherDataArray = fm.WeatherData1;
@@ -19,39 +53,56 @@ namespace SearchingSort
                 Console.WriteLine(wd.ToString());
             }
             Console.ReadLine(); 
-
+            */
         }
 
-        public static void QuickSort(WeatherData[] WeatherDataArray)
+        private static void DisplayDirectoryMenu()
         {
-            // pre: 0 <= n <= data.length
-            // post: values in data[0 ... n
-            Quick_SortYears(WeatherDataArray, 0, WeatherDataArray.Length-1);
+            Console.WriteLine("Please enter the directory of the files\n");
+            String dir = Console.ReadLine();
+            FileManager fm = new FileManager();
+            while (fm.inputFiles(@dir) == false)
+            {
+                //input not valid
+                Console.WriteLine("Invalid input, Please enter the directory of the files\n");
+                ConsoleKeyInfo keypressed = Console.ReadKey();
+                if (keypressed.Key == ConsoleKey.Escape) return;
+                Console.ReadLine();
+            }
+            DisplayMainMenu(fm);
         }
-        public static void Quick_SortYears(WeatherData[] WeatherDataArray, int left, int right)
+
+        private static void DisplayMainMenu(FileManager fm)
         {
-            // DueDate.Ticks is used to get the number of milliseconds
-            int index, index2;
-            double pivot;
-            WeatherData temp;
-            index = left;
-            index2 = right;
-            pivot = WeatherDataArray[(left + right) / 2].Year;
+            Console.WriteLine("Main Menu\n");
+            string selection = "0";
             do
             {
-                while ((WeatherDataArray[index].Year > pivot) && (index < right)) index++;
-                while ((pivot > WeatherDataArray[index2].Year) && (index2 > left)) index2--;
-                if (index <= index2)
+                Console.WriteLine("1. Sort by year ascending");
+                Console.WriteLine("2. Sort by year decending");
+                Console.WriteLine("3. Quit");
+                selection = Console.ReadLine();
+
+                switch (selection)
                 {
-                    temp = WeatherDataArray[index];
-                    WeatherDataArray[index] = WeatherDataArray[index2];
-                    WeatherDataArray[index2] = temp;
-                    index++;
-                    index2--;
+                    case "1":
+                        // sort and display year by ascending
+                        fm.sort();
+                        foreach (WeatherData wd in fm.WeatherData1)
+                        {
+                            Console.WriteLine(wd.ToString());
+                        }
+                        break;
+                    case "2":
+                        // sort and display year by ascending
+
+                        break;
+                    default:
+                        Console.WriteLine("Selection not correct");
+                        break;
+                        // etc..
                 }
-            } while (index <= index2);
-            if (left < index2) Quick_SortYears(WeatherDataArray, left, index2);
-            if (index < right) Quick_SortYears(WeatherDataArray, index, right);
+            } while (selection != "3");
         }
     }
 }
