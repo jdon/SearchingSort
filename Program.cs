@@ -78,7 +78,7 @@ namespace SearchingSort
                 {
                     case "1":
                         // sort and display year by ascending
-                        fm.sort();
+                        fm.sort(false);
                         foreach (WeatherData wd in fm.WeatherData1)
                         {
                             Console.WriteLine(wd.ToString());

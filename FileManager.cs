@@ -78,33 +78,42 @@ namespace SearchingSort
             }
             return FilesValid;
         }
-        int i = 0;
-        public void sort()
+        public void sort(Boolean ascending)
         {
-            MyQuick_SortYears(WeatherData1, 0, WeatherData1.Length);
-            Debug.WriteLine(x);
+            MyQuick_SortYears(WeatherData1, 0, WeatherData1.Length, ascending);
         }
-        public void MyQuick_SortYears(WeatherData[] WeatherDataArray, int left, int right)
+        public void MyQuick_SortYears(WeatherData[] WeatherDataArray, int left, int right, Boolean ascending)
         {
             int pivot;
             if (right - left < 2) return;
-            pivot = partitionYears(WeatherDataArray, left, right);
-            MyQuick_SortYears(WeatherDataArray, left, pivot);
-            MyQuick_SortYears(WeatherDataArray, pivot, right);
+            pivot = partitionYears(WeatherDataArray, left, right, ascending);
+            MyQuick_SortYears(WeatherDataArray, left, pivot, ascending);
+            MyQuick_SortYears(WeatherDataArray, pivot, right, ascending);
         }
-        public int partitionYears(WeatherData[] WeatherDataArray, int left, int right)
+        public int partitionYears(WeatherData[] WeatherDataArray, int left, int right, Boolean ascending)
         {
             int i = left - 1, j = right;
             Debug.WriteLine(left);
             Random ran = new Random();
+            //random pivot is used as the list is sorted
             double pivot = WeatherDataArray[ran.Next(left, right)].Year;
             WeatherData temp;
             while (true)
             {
-                //move from right to left until there is something more than the pivot
-                do j--; while (WeatherDataArray[j].Year < pivot);
-                //move from left to right until there is something that is less that the pivot
-                do i++; while (WeatherDataArray[i].Year > pivot);
+                if (ascending)
+                {
+                    //move from right to left until there is something more than the pivot
+                    do j--; while (WeatherDataArray[j].Year < pivot);
+                    //move from left to right until there is something that is less that the pivot
+                    do i++; while (WeatherDataArray[i].Year > pivot);
+                }
+                else
+                {
+                    //move from right to left until there is something more than the pivot
+                    do j--; while (WeatherDataArray[j].Year > pivot);
+                    //move from left to right until there is something that is less that the pivot
+                    do i++; while (WeatherDataArray[i].Year < pivot);
+                }
                 //if they meet then all the elements to the left are smaller than or equal to the pivot and all the elements to the right are greater than the pivot
                 if (i < j)
                 {
