@@ -16,7 +16,6 @@ namespace SearchingSort
         }
         WeatherData[] WeatherData = new WeatherData[1022];
         string[] MonthNames = CultureInfo.CurrentCulture.DateTimeFormat.MonthNames;
-        int counter = 0;
 
         internal WeatherData[] WeatherData1
         {
@@ -33,6 +32,7 @@ namespace SearchingSort
 
         public void inputFiles(String Dir)
         {
+            int counter = 0;
             StreamReader YearFile = new StreamReader(Dir+@"\Year.txt");
             StreamReader MonthFile = new StreamReader(Dir+@"\Month.txt");
             StreamReader WS1_AFFile = new StreamReader(Dir+@"\WS1_AF.txt");
