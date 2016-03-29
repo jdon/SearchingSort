@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -52,7 +53,7 @@ namespace SearchingSort
                 for (Double x = 0; x <= 1021; x++)
                 {
                     Double Year = Convert.ToDouble(YearFile.ReadLine());
-                    Double Month = Array.IndexOf(MonthNames, MonthFile.ReadLine()) + 1;
+                    int Month = Array.IndexOf(MonthNames, MonthFile.ReadLine()) + 1;
 
                     Double WS1_AF = Convert.ToDouble(WS1_AFFile.ReadLine());
                     Double WS1_Rain = Convert.ToDouble(WS1_RainFile.ReadLine());
@@ -77,44 +78,75 @@ namespace SearchingSort
             }
             return FilesValid;
         }
-
+        int i = 0;
         public void sort()
         {
-            MyQuick_SortYears(WeatherData, 0, WeatherData.Length-1);
+            MyQuick_SortYears(WeatherData1, 0, WeatherData1.Length);
+            Debug.WriteLine(x);
         }
-
-        public int partition(WeatherData[] WeatherDataArray, int left, int right)
+        public void MyQuick_SortYears(WeatherData[] WeatherDataArray, int left, int right)
         {
-            //Hoare partition scheme
-            // pivot is the left most element
-            double pivot = WeatherDataArray[left].Year;
-            int i = left;
-            int j = right;
+            int pivot;
+            if (right - left < 2) return;
+            pivot = partitionYears(WeatherDataArray, left, right);
+            MyQuick_SortYears(WeatherDataArray, left, pivot);
+            MyQuick_SortYears(WeatherDataArray, pivot, right);
+        }
+        public int partitionYears(WeatherData[] WeatherDataArray, int left, int right)
+        {
+            int i = left - 1, j = right;
+            Debug.WriteLine(left);
+            Random ran = new Random();
+            double pivot = WeatherDataArray[ran.Next(left, right)].Year;
             WeatherData temp;
-            while (true) {
-                //move from left to right until there is something that is less that the pivot
-                while (WeatherDataArray[i].Year < pivot) i++;
+            while (true)
+            {
                 //move from right to left until there is something more than the pivot
-                while (WeatherDataArray[j].Year > pivot) j--;
+                do j--; while (WeatherDataArray[j].Year < pivot);
+                //move from left to right until there is something that is less that the pivot
+                do i++; while (WeatherDataArray[i].Year > pivot);
                 //if they meet then all the elements to the left are smaller than or equal to the pivot and all the elements to the right are greater than the pivot
-                if (i >= j)
+                if (i < j)
                 {
-                    return j;
+                    // left and right need to be swapped as the left one is greater than the pivot and the right is less than the pivot
+                    temp = WeatherDataArray[i];
+                    WeatherDataArray[i] = WeatherDataArray[j];
+                    WeatherDataArray[j] = temp;
                 }
-                // left and right need to be swapped as the left one is greater than the pivot and the right is less than the pivot
-                temp = WeatherDataArray[i];
-                WeatherDataArray[i] = WeatherDataArray[j];
-                WeatherDataArray[j] = WeatherDataArray[i];
+                else
+                    return j + 1;
             }
         }
 
-        public void MyQuick_SortYears(WeatherData[] WeatherDataArray, int left, int right)
+        public void MyQuick_SortMonths(WeatherData[] WeatherDataArray, int left, int right)
         {
-            if (left < right )
+            int pivot;
+            if (right - left < 2) return;
+            pivot = partitionMonths(WeatherDataArray, left, right);
+            MyQuick_SortMonths(WeatherDataArray, left, pivot);
+            MyQuick_SortMonths(WeatherDataArray, pivot, right);
+        }
+
+        public int partitionMonths(WeatherData[] WeatherDatArray, int left, int right)
+        {
+            int pivot = WeatherDatArray[left].Month, i = left - 1, j = right;
+            WeatherData temp;
+            while (true)
             {
-                int p = partition(WeatherData, left, right);
-                MyQuick_SortYears(WeatherData, right, p);
-                MyQuick_SortYears(WeatherData, p + 1, left);
+                //move from right to left until there is something more than the pivot
+                do j--; while (WeatherDatArray[j].Month > pivot);
+                //move from left to right until there is something that is less that the pivot
+                do i++; while (WeatherDatArray[i].Month < pivot);
+                //if they meet then all the elements to the left are smaller than or equal to the pivot and all the elements to the right are greater than the pivot
+                if (i < j)
+                {
+                    // left and right need to be swapped as the left one is greater than the pivot and the right is less than the pivot
+                    temp = WeatherDatArray[i];
+                    WeatherDatArray[i] = WeatherDatArray[j];
+                    WeatherDatArray[j] = temp;
+                }
+                else
+                    return j + 1;
             }
         }
     }

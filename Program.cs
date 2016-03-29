@@ -40,20 +40,8 @@ namespace SearchingSort
                     default:
                         //Console.WriteLine("Selection not correct");
                         break;
-                        // etc..
                 }
             } while (selection != "3");
-            /*
-            FileManager fm = new FileManager();
-            fm.inputFiles(@"C:\Users\jdon\Downloads\CMP1124M_Weather_Data");
-            WeatherData[] WeatherDataArray = fm.WeatherData1;
-            QuickSort(WeatherDataArray);
-            foreach (WeatherData wd in WeatherDataArray)
-            {
-                Console.WriteLine(wd.ToString());
-            }
-            Console.ReadLine(); 
-            */
         }
 
         private static void DisplayDirectoryMenu()
@@ -71,6 +59,7 @@ namespace SearchingSort
                 if (dir == "3") return;
                 FilesCorrect = fm.inputFiles(@dir);
             }
+            //correct files found and are valid
             DisplayMainMenu(fm);
         }
 

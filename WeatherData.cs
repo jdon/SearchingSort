@@ -9,7 +9,7 @@ namespace SearchingSort
     public class WeatherData
     {
         public Double Year { get; set; }
-        Double Month { get; set; }
+        public int Month { get; set; }
         Double WS1_AF { get; set; }
         Double WS1_Rain { get; set; }
         Double WS1_Sun { get; set; }
@@ -21,7 +21,7 @@ namespace SearchingSort
         Double WS2_TMax { get; set; }
         Double WS2_Tmin { get; set; }
 
-        public WeatherData(Double Year, Double Month, Double WS1_AF,Double WS1_Rain, Double WS1_Sun, Double WS1_TMax, Double WS1_Tmin, Double WS2_AF, Double WS2_Rain, Double WS2_Sun, Double WS2_TMax, Double WS2_Tmin)
+        public WeatherData(Double Year, int Month, Double WS1_AF,Double WS1_Rain, Double WS1_Sun, Double WS1_TMax, Double WS1_Tmin, Double WS2_AF, Double WS2_Rain, Double WS2_Sun, Double WS2_TMax, Double WS2_Tmin)
         {
 
             this.Year = Year;
