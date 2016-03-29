@@ -11,10 +11,10 @@ namespace SearchingSort
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Select where your files are\n");
             string selection = "0";
             do
             {
+                Console.WriteLine("Select where your files are\n");
                 Console.WriteLine("1. Current directory");
                 Console.WriteLine("2. Enter a directory");
                 Console.WriteLine("3. Quit");
@@ -26,7 +26,7 @@ namespace SearchingSort
                         FileManager fm = new FileManager();
                         if (fm.inputFiles(Directory.GetCurrentDirectory()) == false)
                         {
-                            Console.WriteLine("Files not found!");
+                            Console.WriteLine("\nFiles not found!\n");
                             break;
                         }
                         else
@@ -61,13 +61,15 @@ namespace SearchingSort
             Console.WriteLine("Please enter the directory of the files\n");
             String dir = Console.ReadLine();
             FileManager fm = new FileManager();
-            while (fm.inputFiles(@dir) == false)
+            Boolean FilesCorrect = fm.inputFiles(@dir);
+            while (!FilesCorrect)
             {
                 //input not valid
-                Console.WriteLine("Invalid input, Please enter the directory of the files\n");
-                ConsoleKeyInfo keypressed = Console.ReadKey();
-                if (keypressed.Key == ConsoleKey.Escape) return;
-                Console.ReadLine();
+                Console.WriteLine("Invalid input, Please enter the directory of the files");
+                Console.WriteLine("Enter 3 to quit\n");
+                dir = Console.ReadLine();
+                if (dir == "3") return;
+                FilesCorrect = fm.inputFiles(@dir);
             }
             DisplayMainMenu(fm);
         }
@@ -98,7 +100,6 @@ namespace SearchingSort
 
                         break;
                     default:
-                        Console.WriteLine("Selection not correct");
                         break;
                         // etc..
                 }
