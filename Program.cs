@@ -22,13 +22,13 @@ namespace SearchingSort
 
         }
 
-        public static void QuickSort(WeatherData[] data)
+        public static void QuickSort(WeatherData[] WeatherDataArray)
         {
             // pre: 0 <= n <= data.length
             // post: values in data[0 ... n
-            Quick_SortYears(data, 0, data.Length-1);
+            Quick_SortYears(WeatherDataArray, 0, WeatherDataArray.Length-1);
         }
-        public static void Quick_SortYears(WeatherData[] Assignments, int left, int right)
+        public static void Quick_SortYears(WeatherData[] WeatherDataArray, int left, int right)
         {
             // DueDate.Ticks is used to get the number of milliseconds
             int index, index2;
@@ -36,22 +36,22 @@ namespace SearchingSort
             WeatherData temp;
             index = left;
             index2 = right;
-            pivot = Assignments[(left + right) / 2].Year;
+            pivot = WeatherDataArray[(left + right) / 2].Year;
             do
             {
-                while ((Assignments[index].Year > pivot) && (index < right)) index++;
-                while ((pivot > Assignments[index2].Year) && (index2 > left)) index2--;
+                while ((WeatherDataArray[index].Year > pivot) && (index < right)) index++;
+                while ((pivot > WeatherDataArray[index2].Year) && (index2 > left)) index2--;
                 if (index <= index2)
                 {
-                    temp = Assignments[index];
-                    Assignments[index] = Assignments[index2];
-                    Assignments[index2] = temp;
+                    temp = WeatherDataArray[index];
+                    WeatherDataArray[index] = WeatherDataArray[index2];
+                    WeatherDataArray[index2] = temp;
                     index++;
                     index2--;
                 }
             } while (index <= index2);
-            if (left < index2) Quick_SortYears(Assignments, left, index2);
-            if (index < right) Quick_SortYears(Assignments, index, right);
+            if (left < index2) Quick_SortYears(WeatherDataArray, left, index2);
+            if (index < right) Quick_SortYears(WeatherDataArray, index, right);
         }
     }
 }
