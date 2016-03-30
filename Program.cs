@@ -73,15 +73,15 @@ namespace SearchingSort
                 Console.WriteLine("1. Search");
                 Console.WriteLine("2. Sort - Ascending");
                 Console.WriteLine("3. Sort - descending");
-                Console.WriteLine("4. Quit");
+                Console.WriteLine("4. Show min, max and median value");
+                Console.WriteLine("5. Quit");
                 selection = Console.ReadLine();
 
                 switch (selection)
                 {
                     case "1":
                         // display search menu
-                        int i = fm.BinarySearchYears(1950);
-                        Console.WriteLine(i);
+                        DisplaySearchMenu();
                         //TODO
                         break;
                     case "2":
@@ -92,11 +92,15 @@ namespace SearchingSort
                         // display sort menu
                         DisplayMainMenu(false);
                         break;
+                    case "4":
+                        // display sort menu
+                        DisplayMinMaxMenu();
+                        break;
                     default:
                         break;
                         // etc..
                 }
-            } while (selection != "4");
+            } while (selection != "5");
         }
 
         private static void DisplayMainMenu(Boolean isAscending)
@@ -118,9 +122,65 @@ namespace SearchingSort
                     Console.WriteLine(e.Message);
                     break;
                 }
-                foreach (WeatherData wd in fm.WeatherDataArray1)
+                foreach (WeatherData wd in fm.WeatherDataArray)
                 {
                     Console.WriteLine(wd.ToString());
+                }
+            } while (selection != "exit");
+        }
+        private static void DisplaySearchMenu()
+        {
+            string selection = "";
+            Double SearchKey = 0;
+            do
+            {
+                Console.WriteLine("Please type in which of the following fields you would like to search\n");
+                Console.WriteLine("Year, Month, WS1_AF, WS1_Rain, WS1_Sun, WS1_TMax, WS1_Tmin, WS2_AF, WS2_Rain, WS2_Sun, WS2_TMax, WS2_Tmin");
+                Console.WriteLine("Type exit to return to the previous menu\n");
+                selection = Console.ReadLine();
+                Console.WriteLine("What you like to search for?\n");
+                try
+                {
+                    SearchKey = Convert.ToDouble(Console.ReadLine());
+                    List<WeatherData> wd = fm.SeqSearch(SearchKey, selection);
+                    if (wd.Count == 0)
+                    {
+                        Console.WriteLine("No items were found!");
+                    }
+                    else
+                    {
+                        //print the output of the search
+                        foreach (WeatherData w in wd)
+                        {
+                            Console.WriteLine(w.ToString());
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    if (selection == "exit") break;
+                    Console.WriteLine(e.Message);
+                }
+            } while (selection != "exit");
+        }
+        private static void DisplayMinMaxMenu()
+        {
+            string selection = "0";
+            do
+            {
+                Console.WriteLine("Please type in which of the following fields you would like to find the min, max and median of\n");
+                Console.WriteLine("Year, Month, WS1_AF, WS1_Rain, WS1_Sun, WS1_TMax, WS1_Tmin, WS2_AF, WS2_Rain, WS2_Sun, WS2_TMax, WS2_Tmin");
+                Console.WriteLine("Type exit to return to the previous menu\n");
+                selection = Console.ReadLine();
+                try
+                {
+                    fm.GetMinMaxMedian(selection);
+                }
+                catch (Exception e)
+                {
+                    if (selection == "exit") break;
+                    Console.WriteLine(e.Message);
+                    break;
                 }
             } while (selection != "exit");
         }

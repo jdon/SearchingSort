@@ -11,25 +11,12 @@ namespace SearchingSort
 {
     public class FileManager
     {
+        public WeatherData[] WeatherDataArray { get; set; }
         public FileManager()
         {
-
+            WeatherDataArray = new WeatherData[1022];
         }
-        WeatherData[] WeatherDataArray = new WeatherData[1022];
         string[] MonthNames = CultureInfo.CurrentCulture.DateTimeFormat.MonthNames;
-
-        internal WeatherData[] WeatherDataArray1
-        {
-            get
-            {
-                return WeatherDataArray;
-            }
-
-            set
-            {
-                WeatherDataArray = value;
-            }
-        }
 
         public Boolean inputFiles(String Dir)
         {
@@ -68,7 +55,7 @@ namespace SearchingSort
                     Double WS2_Tmin = Convert.ToDouble(WS2_TMinFile.ReadLine());
 
                     WeatherData wd = new WeatherData(Year, Month, WS1_AF, WS1_Rain, WS1_Sun, WS1_TMax, WS1_Tmin, WS2_AF, WS2_Rain, WS2_Sun, WS2_TMax, WS2_Tmin);
-                    WeatherDataArray1[counter] = wd;
+                    WeatherDataArray[counter] = wd;
                     counter++;
                 }
             }
@@ -79,47 +66,65 @@ namespace SearchingSort
             return FilesValid;
         }
 
-        public void SeqSearch(Double Key)
+        public List<WeatherData> SeqSearch(Double WhatToFind,String WhatToSearch)
         {
+            List<WeatherData> weather = new List<WeatherData>();
+            for (int i = 0; i < WeatherDataArray.Length; i++)
+            {
+                if (getStringData(i, WhatToSearch) == WhatToFind)
+                {
+                    // they match so add to array;
+                    weather.Add(WeatherDataArray[i]);
+                }
+            }
+            return weather;
+        }
 
+        public void GetMinMaxMedian(String Selection)
+        {
+            QuickSort_custom(true, Selection);
+            Double min = getStringData(0, Selection);
+            Double max = getStringData(WeatherDataArray.Length-1, Selection);
+            Double median = (getStringData(510, Selection) + getStringData(510, Selection)/2);
+            Console.WriteLine("The min value is:" + min + " The max value is:" + max + " The median value is " + median);
         }
 
         public void QuickSort_custom(Boolean ascending, String WhatToSort)
         {
-            MyQuickSort_CustomData(WeatherDataArray1, 0, WeatherDataArray1.Length, ascending, WhatToSort);
+            MyQuickSort_CustomData(0, WeatherDataArray.Length, ascending, WhatToSort);
         }
 
-        public void MyQuickSort_CustomData(WeatherData[] WeatherDataArray, int left, int right, Boolean ascending,String WhatToSort)
+        public void MyQuickSort_CustomData(int left, int right, Boolean ascending,String WhatToSort)
         {
             int pivot;
             if (right - left < 2) return;
-            pivot = partition_CustomData(WeatherDataArray, left, right, ascending, WhatToSort);
-            MyQuickSort_CustomData(WeatherDataArray, left, pivot, ascending, WhatToSort);
-            MyQuickSort_CustomData(WeatherDataArray, pivot, right, ascending, WhatToSort);
+            pivot = partition_CustomData(left, right, ascending, WhatToSort);
+            MyQuickSort_CustomData(left, pivot, ascending, WhatToSort);
+            MyQuickSort_CustomData(pivot, right, ascending, WhatToSort);
         }
-        public int partition_CustomData(WeatherData[] WeatherDataArray, int left, int right, Boolean ascending,String WhatToSort)
+        public int partition_CustomData(int left, int right, Boolean ascending,String WhatToSort)
         {
             int i = left - 1, j = right;
             Debug.WriteLine(left);
             Random ran = new Random();
             //random pivot is used as the list is sorted
-            double pivot = getStringData(WeatherDataArray, ran.Next(left, right), WhatToSort);
+            double pivot = getStringData(ran.Next(left, right), WhatToSort);
             WeatherData temp;
             while (true)
             {
-                if (ascending)
+                if (!ascending)
                 {
                     //move from right to left until there is something less than the pivot
-                    do j--; while (getStringData(WeatherDataArray, j, WhatToSort) < pivot);
+                    do j--; while (getStringData(j, WhatToSort) < pivot);
                     //move from left to right until there is something that is more that the pivot
-                    do i++; while (getStringData(WeatherDataArray, i, WhatToSort) > pivot);
+                    do i++; while (getStringData(i, WhatToSort) > pivot);
                 }
                 else
                 {
                     //move from right to left until there is something more than the pivot
-                    do j--; while (getStringData(WeatherDataArray, j, WhatToSort) > pivot);
+                    do j--; while (getStringData(j, WhatToSort) > pivot);
                     //move from left to right until there is something that is less that the pivot
-                    do i++; while (getStringData(WeatherDataArray, i, WhatToSort) < pivot);
+                    do i++; while (getStringData(i, WhatToSort) < pivot);
                 }
                 //if they meet then all the elements to the left are smaller than or equal to the pivot and all the elements to the right are greater than the pivot
                 if (i < j)
@@ -134,57 +139,57 @@ namespace SearchingSort
             }
         }
 
-        private double getStringData(WeatherData[] WeatherDataArray, int index, String data)
+        private double getStringData(int index, String data)
         {
             if (data == "Year")
             {
-                return this.WeatherDataArray[index].Year;
+                return WeatherDataArray[index].Year;
             }
             if (data == "Month")
             {
-                return this.WeatherDataArray[index].Month;
+                return WeatherDataArray[index].Month;
             }
             if (data == "WS1_AF")
             {
-                return this.WeatherDataArray[index].WS1_AF;
+                return WeatherDataArray[index].WS1_AF;
             }
             if (data == "WS1_Rain")
             {
-                return this.WeatherDataArray[index].WS1_Rain;
+                return WeatherDataArray[index].WS1_Rain;
             }
             if (data == "WS1_Sun")
             {
-                return this.WeatherDataArray[index].WS1_Sun;
+                return WeatherDataArray[index].WS1_Sun;
             }
             if (data == "WS1_TMax")
             {
-                return this.WeatherDataArray[index].WS1_TMax;
+                return WeatherDataArray[index].WS1_TMax;
             }
             if (data == "WS1_Tmin")
             {
-                return this.WeatherDataArray[index].WS1_Tmin;
+                return WeatherDataArray[index].WS1_Tmin;
             }
             if (data == "WS2_AF")
             {
-                return this.WeatherDataArray[index].WS2_AF;
+                return WeatherDataArray[index].WS2_AF;
             }
             if (data == "WS2_Rain")
             {
-                return this.WeatherDataArray[index].WS2_Rain;
+                return WeatherDataArray[index].WS2_Rain;
             }
             if (data == "WS2_Sun")
             {
-                return this.WeatherDataArray[index].WS2_Sun;
+                return WeatherDataArray[index].WS2_Sun;
             }
             if (data == "WS2_TMax")
             {
-                return this.WeatherDataArray[index].WS2_TMax;
+                return WeatherDataArray[index].WS2_TMax;
             }
             if (data == "WS2_Tmin")
             {
-                return this.WeatherDataArray[index].WS2_Tmin;
+                return WeatherDataArray[index].WS2_Tmin;
             }
-            throw new System.ArgumentException("Inputted data is not valid", data);
+            throw new System.ArgumentException("Not a valid data type!", data);
         }
     }
 }
