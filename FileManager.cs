@@ -85,8 +85,10 @@ namespace SearchingSort
             QuickSort_custom(true, Selection);
             Double min = getStringData(0, Selection);
             Double max = getStringData(WeatherDataArray.Length-1, Selection);
-            Double median = (getStringData(510, Selection) + getStringData(510, Selection)/2);
-            Console.WriteLine("The min value is:" + min + " The max value is:" + max + " The median value is " + median);
+            Double median = (getStringData(511, Selection) + getStringData(512, Selection))/2;
+            Console.WriteLine("The min value is:" + min +"\n"+ WeatherDataArray[0].ToString()+ 
+                " \nThe max value is:" + max+"\n" + WeatherDataArray[WeatherDataArray.Length - 1].ToString() + 
+                " \nThe median value is " + median+"\n"+WeatherDataArray[511].ToString()+"\n" + WeatherDataArray[512].ToString());
         }
 
         public void QuickSort_custom(Boolean ascending, String WhatToSort)
