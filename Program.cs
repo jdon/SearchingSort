@@ -70,11 +70,14 @@ namespace SearchingSort
             string selection = "0";
             do
             {
-                Console.WriteLine("1. Search");
-                Console.WriteLine("2. Sort - Ascending");
-                Console.WriteLine("3. Sort - descending");
-                Console.WriteLine("4. Show min, max and median value");
-                Console.WriteLine("5. Quit");
+                Console.WriteLine("1. Search - Sequential");
+                Console.WriteLine("2. Search - Binarytree");
+                Console.WriteLine("3. QuickSort - Ascending");
+                Console.WriteLine("4. QuickSort - Descending");
+                Console.WriteLine("5. InsertionSort - Ascending");
+                Console.WriteLine("6. InsertionSort - Descending");
+                Console.WriteLine("7. Show min, max and median value");
+                Console.WriteLine("8. Quit");
                 selection = Console.ReadLine();
 
                 switch (selection)
@@ -82,17 +85,28 @@ namespace SearchingSort
                     case "1":
                         // display search menu
                         DisplaySearchMenu();
-                        //TODO
                         break;
                     case "2":
-                        // display sort menu
-                        DisplayMainMenu(true);
+                        // display search menu
+                        DisplayBinarySearchMenu();
                         break;
                     case "3":
                         // display sort menu
-                        DisplayMainMenu(false);
+                        DisplayMainMenu(true,true);
                         break;
                     case "4":
+                        // display sort menu
+                        DisplayMainMenu(false, true);
+                        break;
+                    case "5":
+                        // display sort menu
+                        DisplayMainMenu(true,false);
+                        break;
+                    case "6":
+                        // display sort menu
+                        DisplayMainMenu(false,false);
+                        break;
+                    case "7":
                         // display sort menu
                         DisplayMinMaxMenu();
                         break;
@@ -100,38 +114,51 @@ namespace SearchingSort
                         break;
                         // etc..
                 }
-            } while (selection != "5");
+            } while (selection != "8");
         }
 
-        private static void DisplayMainMenu(Boolean isAscending)
+        private static void DisplayMainMenu(Boolean isAscending,Boolean isQuickSort)
         {
             string selection = "0";
+            TimeSpan timetaken;
             do
             {
                 Console.WriteLine("Please type in which of the following fields you would like to sort\n");
                 Console.WriteLine("Year, Month, WS1_AF, WS1_Rain, WS1_Sun, WS1_TMax, WS1_Tmin, WS2_AF, WS2_Rain, WS2_Sun, WS2_TMax, WS2_Tmin");
                 Console.WriteLine("Type exit to return to the previous menu\n");
                 selection = Console.ReadLine();
+                if (selection == "exit") break;
                 try
                 {
-                    fm.QuickSort_custom(isAscending, selection);
+                    DateTime time = System.DateTime.Now;
+                    if (isQuickSort)
+                    {
+                        fm.QuickSort(isAscending, selection);
+                    }
+                    else
+                    {
+                        fm.insertionsort(isAscending, selection);
+                    }
+                    timetaken = System.DateTime.Now.Subtract(time);
                 }
                 catch (Exception e)
                 {
-                    if (selection == "exit") break;
                     Console.WriteLine(e.Message);
                     break;
                 }
+               
                 foreach (WeatherData wd in fm.WeatherDataArray)
                 {
                     Console.WriteLine(wd.ToString());
                 }
+                Console.WriteLine("Time taken: " + timetaken.Milliseconds+"ms");
             } while (selection != "exit");
         }
         private static void DisplaySearchMenu()
         {
             string selection = "";
             Double SearchKey = 0;
+            TimeSpan timetaken;
             do
             {
                 Console.WriteLine("Please type in which of the following fields you would like to search\n");
@@ -142,7 +169,9 @@ namespace SearchingSort
                 try
                 {
                     SearchKey = Convert.ToDouble(Console.ReadLine());
+                    DateTime time = System.DateTime.Now;
                     List<WeatherData> wd = fm.SeqSearch(SearchKey, selection);
+                    timetaken = System.DateTime.Now.Subtract(time);
                     if (wd.Count == 0)
                     {
                         Console.WriteLine("No items were found!");
@@ -155,6 +184,7 @@ namespace SearchingSort
                             Console.WriteLine(w.ToString());
                         }
                     }
+                    Console.WriteLine("Time taken: " + timetaken.Milliseconds + "ms");
                 }
                 catch (Exception e)
                 {
@@ -163,6 +193,45 @@ namespace SearchingSort
                 }
             } while (selection != "exit");
         }
+        private static void DisplayBinarySearchMenu()
+        {
+            string selection = "";
+            Double SearchKey = 0;
+            TimeSpan timetaken;
+            do
+            {
+                Console.WriteLine("Please type in which of the following fields you would like to search\n");
+                Console.WriteLine("Year, Month, WS1_AF, WS1_Rain, WS1_Sun, WS1_TMax, WS1_Tmin, WS2_AF, WS2_Rain, WS2_Sun, WS2_TMax, WS2_Tmin");
+                Console.WriteLine("Type exit to return to the previous menu\n");
+                selection = Console.ReadLine();
+                Console.WriteLine("What you like to search for?\n");
+                try
+                {
+                    SearchKey = Convert.ToDouble(Console.ReadLine());
+                    int lowerBound;
+                    int upperBound;
+                    DateTime time = System.DateTime.Now;
+                    fm.BinarySearch(SearchKey, selection ,out lowerBound, out upperBound);
+                    timetaken = System.DateTime.Now.Subtract(time);
+                    if (lowerBound > upperBound)
+                    {
+                        Console.WriteLine("No results found!");
+                    }
+                    while (lowerBound <= upperBound)
+                    {
+                        Console.WriteLine(fm.WeatherDataArray[lowerBound].ToString());
+                        lowerBound++;
+                    }
+                    Console.WriteLine("Time taken: " + timetaken.Milliseconds + "ms");
+                }
+                catch (Exception e)
+                {
+                    if (selection == "exit") break;
+                    Console.WriteLine(e.Message);
+                }
+            } while (selection != "exit");
+        }
+
         private static void DisplayMinMaxMenu()
         {
             string selection = "0";
