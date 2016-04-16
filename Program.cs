@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,7 @@ namespace SearchingSort
     class Program
     {
         private static FileManager fm = new FileManager();
+        private static string[] MonthNames = CultureInfo.CurrentCulture.DateTimeFormat.MonthNames;
 
         static void Main(string[] args)
         {
@@ -108,7 +110,18 @@ namespace SearchingSort
                         break;
                     case "7":
                         // display sort menu
-                        DisplayMinMaxMenu();
+                        fm.GetMinMaxMedian("Year");
+                        fm.GetMinMaxMedian("Month");
+                        fm.GetMinMaxMedian("WS1_AF");
+                        fm.GetMinMaxMedian("WS1_Rain");
+                        fm.GetMinMaxMedian("WS1_Sun");
+                        fm.GetMinMaxMedian("WS1_TMax");
+                        fm.GetMinMaxMedian("WS1_Tmin");
+                        fm.GetMinMaxMedian("WS2_AF");
+                        fm.GetMinMaxMedian("WS2_Rain");
+                        fm.GetMinMaxMedian("WS2_Sun");
+                        fm.GetMinMaxMedian("WS2_TMax");
+                        fm.GetMinMaxMedian("WS2_Tmin");
                         break;
                     default:
                         break;
@@ -168,7 +181,15 @@ namespace SearchingSort
                 Console.WriteLine("What you like to search for?\n");
                 try
                 {
-                    SearchKey = Convert.ToDouble(Console.ReadLine());
+                    String searchString = Console.ReadLine();
+                    if (string.Equals(selection, "Month", StringComparison.OrdinalIgnoreCase))
+                    {
+                        SearchKey = convertMonthtoNumber(searchString);
+                    }
+                    else
+                    {
+                        SearchKey = Convert.ToDouble(searchString);
+                    }
                     DateTime time = System.DateTime.Now;
                     List<WeatherData> wd = fm.SeqSearch(SearchKey, selection);
                     timetaken = System.DateTime.Now.Subtract(time);
@@ -207,7 +228,15 @@ namespace SearchingSort
                 Console.WriteLine("What you like to search for?\n");
                 try
                 {
-                    SearchKey = Convert.ToDouble(Console.ReadLine());
+                    String searchString = Console.ReadLine();
+                    if (string.Equals(selection, "Month", StringComparison.OrdinalIgnoreCase))
+                    {
+                        SearchKey = convertMonthtoNumber(searchString);
+                    }
+                    else
+                    {
+                        SearchKey = Convert.ToDouble(searchString);
+                    }
                     int lowerBound;
                     int upperBound;
                     DateTime time = System.DateTime.Now;
@@ -243,7 +272,18 @@ namespace SearchingSort
                 selection = Console.ReadLine();
                 try
                 {
-                    fm.GetMinMaxMedian(selection);
+                    fm.GetMinMaxMedian("Year");
+                    fm.GetMinMaxMedian("Month");
+                    fm.GetMinMaxMedian("WS1_AF");
+                    fm.GetMinMaxMedian("WS1_Rain");
+                    fm.GetMinMaxMedian("WS1_Sun");
+                    fm.GetMinMaxMedian("WS1_TMax");
+                    fm.GetMinMaxMedian("WS1_Tmin");
+                    fm.GetMinMaxMedian("WS2_AF");
+                    fm.GetMinMaxMedian("WS2_Rain");
+                    fm.GetMinMaxMedian("WS2_Sun");
+                    fm.GetMinMaxMedian("WS2_TMax");
+                    fm.GetMinMaxMedian("WS2_Tmin");
                 }
                 catch (Exception e)
                 {
@@ -253,5 +293,15 @@ namespace SearchingSort
                 }
             } while (selection != "exit");
         }
+
+        public static double convertMonthtoNumber(String Month)
+        {
+            return Array.FindIndex(MonthNames, t => t.Equals(Month, StringComparison.InvariantCultureIgnoreCase))+1;
+        }
+        public static String convertNumbertoMonth(int Month)
+        {
+            return CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(Month);
+        }
+
     }
 }

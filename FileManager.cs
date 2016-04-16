@@ -109,9 +109,9 @@ namespace SearchingSort
             Double min = GetData(0, Selection);
             Double max = GetData(WeatherDataArray.Length-1, Selection);
             Double median = (GetData(511, Selection) + GetData(512, Selection))/2;
-            Console.WriteLine("The min value is:" + min +"\n"+ WeatherDataArray[0].ToString()+ 
+            Console.WriteLine(Selection+"\nThe min value is:" + min +"\n"+ WeatherDataArray[0].ToString()+ 
                 " \nThe max value is:" + max+"\n" + WeatherDataArray[WeatherDataArray.Length - 1].ToString() + 
-                " \nThe median value is " + median+"\n"+WeatherDataArray[511].ToString()+"\n" + WeatherDataArray[512].ToString());
+                " \nThe median value is " + median+"\n"+WeatherDataArray[511].ToString()+"\n" + WeatherDataArray[512].ToString()+"\n\n");
         }
 
         public void insertionsort(Boolean ascending, String WhatToSort)
@@ -144,8 +144,6 @@ namespace SearchingSort
 
         public void QuickSort(Boolean Ascending,String WhatToSort)
         {
-            // pre: 0 <= n <= data.length
-            // post: values in data[0 ... n -1] are in ascending order
             Quick_Sort(Ascending,0, WeatherDataArray.Length - 1, WhatToSort);
         }
         public void Quick_Sort(Boolean Ascending, int left, int right, String WhatToSort)

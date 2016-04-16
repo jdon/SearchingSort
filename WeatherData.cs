@@ -44,7 +44,7 @@ namespace SearchingSort
             return "|"+this.Month + "\t|" + this.Year + "\t|" + this.WS1_AF + "\t|" + this.WS1_Rain + "\t|" + this.WS1_Sun + "\t|" + this.WS1_TMax + "\t|" +
                 this.WS1_Tmin + "\t|" + this.WS2_AF + "\t|" + this.WS2_Rain + "\t|" + this.WS2_Sun + "\t|" + this.WS2_TMax + "\t|" + this.WS2_Tmin + "\t|";
                             */
-            return "Month: " + roundMonth(this.Month) + " Year: " + this.Year + " WS1_AF: " + roundDouble(this.WS1_AF) +
+            return "Month: " + Program.convertNumbertoMonth(Convert.ToInt32(this.Month)) + " Year: " + this.Year + " WS1_AF: " + roundDouble(this.WS1_AF) +
                 " WS1_Rain: " + roundDouble(this.WS1_Rain) + " WS1_Sun: " + roundDouble(this.WS1_Sun) +
                 " WS1_TMax: " + roundDouble(this.WS1_TMax) + " WS1_Tmin: " + roundDouble(this.WS1_Tmin) +
                 " WS2_AF: " + roundDouble(this.WS2_AF) + " WS2_Rain: " + roundDouble(this.WS2_Rain) +
