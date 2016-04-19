@@ -12,18 +12,18 @@ namespace SearchingSort
     public class FileManager
     {
         public WeatherData[] WeatherDataArray { get; set; }
+        Random rnd = new Random();
         long numberOfLines;
-        public FileManager()
-        {
-        }
         string[] MonthNames = CultureInfo.CurrentCulture.DateTimeFormat.MonthNames;
+        public int numberOfSwaps { get; set; }
 
-        public Boolean inputFiles(String Dir)
+    public Boolean inputFiles(String Dir) // method for inputting the text files
         {
             Boolean FilesValid = true;
+            numberOfSwaps = 0;
             try
             {
-
+               
                 StreamReader YearFile = new StreamReader(Dir + @"\Year.txt");
                 StreamReader MonthFile = new StreamReader(Dir + @"\Month.txt");
                 StreamReader WS1_AFFile = new StreamReader(Dir + @"\WS1_AF.txt");
@@ -55,7 +55,7 @@ namespace SearchingSort
                     Double WS2_Sun = Convert.ToDouble(WS2_SunFile.ReadLine());
                     Double WS2_TMax = Convert.ToDouble(WS2_TMaxFile.ReadLine());
                     Double WS2_Tmin = Convert.ToDouble(WS2_TMinFile.ReadLine());
-
+                    //creat a new weather data object for each line in the text files and add it to the array
                     WeatherData wd = new WeatherData(Year, Month, WS1_AF, WS1_Rain, WS1_Sun, WS1_TMax, WS1_Tmin, WS2_AF, WS2_Rain, WS2_Sun, WS2_TMax, WS2_Tmin);
                 WeatherDataArray[x] = wd;
                 }
@@ -63,12 +63,13 @@ namespace SearchingSort
             }
             catch
             {
+                // any errors will be return to the method that called this which can handle the error on screen
                 FilesValid = false;
             }
             return FilesValid;
         }
 
-        static long CountLinesInFile(string f)
+        static long CountLinesInFile(string f) // method for counting the amount of lines in the textfile 
         {
             long count = 0;
             using (StreamReader r = new StreamReader(f))
@@ -85,6 +86,7 @@ namespace SearchingSort
         public List<WeatherData> SeqSearch(Double WhatToFind,String WhatToSearch)
         {
             List<WeatherData> weather = new List<WeatherData>();
+            //loop throught each item in the array
            for (int i = 0; i < WeatherDataArray.Length; i++)
            {
                if (GetData(i, WhatToSearch) == WhatToFind)
@@ -98,12 +100,12 @@ namespace SearchingSort
 
         public void BinarySearch(Double WhatToFind, String WhatToSearch, out int lowerindex, out int upperindex)
         {
-            QuickSort(true, WhatToSearch);
-            upperindex = UpperBound(WhatToFind, 0, WeatherDataArray.Length - 1, WhatToSearch);
-            lowerindex = LowerBound(WhatToFind, 0, WeatherDataArray.Length - 1, WhatToSearch);
+            QuickSort(true, WhatToSearch); // sort the array before performing binary searches
+            upperindex = UpperBound(WhatToFind, 0, WeatherDataArray.Length - 1, WhatToSearch); // returns the last result from the search
+            lowerindex = LowerBound(WhatToFind, 0, WeatherDataArray.Length - 1, WhatToSearch); // returns the first result from the search
         }
 
-        public void GetMinMaxMedian(String Selection)
+        public void GetMinMaxMedian(String Selection) // returns a string of the min, max and median value of the array
         {
             QuickSort(true, Selection);
             Double min = GetData(0, Selection);
@@ -114,12 +116,12 @@ namespace SearchingSort
                 " \nThe median value is " + median+"\n"+WeatherDataArray[511].ToString()+"\n" + WeatherDataArray[512].ToString()+"\n\n");
         }
 
-        public void insertionsort(Boolean ascending, String WhatToSort)
+        public void insertionsort(Boolean ascending, String WhatToSort) // insertion sort method
         {
             for (int i = 1; i < WeatherDataArray.Length; i++)
             {
                 Double x = GetData(i,WhatToSort);
-                WeatherData xx = WeatherDataArray[i];
+                WeatherData weatherDataofX = WeatherDataArray[i];
                 int j = i - 1;
                 if (ascending)
                 {
@@ -127,6 +129,7 @@ namespace SearchingSort
                     {
                         WeatherDataArray[j + 1] = WeatherDataArray[j];
                         j = j - 1;
+                        numberOfSwaps++;
                     }
                 }
                 else
@@ -135,9 +138,11 @@ namespace SearchingSort
                     {
                         WeatherDataArray[j + 1] = WeatherDataArray[j];
                         j = j - 1;
+                        numberOfSwaps++;
                     }
                 }
-                WeatherDataArray[j + 1] = xx;
+                WeatherDataArray[j + 1] = weatherDataofX;
+                numberOfSwaps++;
             }
         }
 
@@ -153,26 +158,32 @@ namespace SearchingSort
             WeatherData temp;
             index = left;
             index2 = right;
-            pivot = GetData(((left + right) / 2), WhatToSort);
+            //random pivot is used to reduce chance of worst case of O(n^2)
+            int randomPivotNumber = rnd.Next(left, right);
+            pivot = GetData(randomPivotNumber, WhatToSort);
             do
             {
                 if (Ascending)
                 {
+                    // the movement of the sort is modififed so that it will sort it in ascending order
                     while ((GetData(index, WhatToSort) < pivot) && (index < right)) index++;
                     while ((pivot < GetData(index2, WhatToSort)) && (index2 > left)) index2--;
                 }
                 else
                 {
+                    // the movement of the sort is modififed so that it will sort it in descending order
                     while ((GetData(index, WhatToSort) > pivot) && (index < right)) index++;
                     while ((pivot > GetData(index2, WhatToSort)) && (index2 > left)) index2--;
                 }
                 if (index <= index2)
                 {
+                    //swapping is performed here
                     temp = WeatherDataArray[index];
                     WeatherDataArray[index] = WeatherDataArray[index2];
                     WeatherDataArray[index2] = temp;
                     index++;
                     index2--;
+                    numberOfSwaps++;
                 }
             } while (index <= index2);
             if (left < index2) Quick_Sort(Ascending,left, index2, WhatToSort);
@@ -207,8 +218,9 @@ namespace SearchingSort
             }
         }
 
-        private double GetData(int index, String data)
+        private double GetData(int index, String data) // method to get the data type from the array from a given index
         {
+            // StringComparison.OrdinalIgnoreCase is used, so the user can input the data type in upper or lower case or a mixture of both
             if (string.Equals(data,"Year",StringComparison.OrdinalIgnoreCase))
             {
                 return WeatherDataArray[index].Year;

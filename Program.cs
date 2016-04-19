@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -10,7 +11,9 @@ namespace SearchingSort
 {
     class Program
     {
+        //create filemanager instance 
         private static FileManager fm = new FileManager();
+        //get a list of the months for use of converting month name to a number
         private static string[] MonthNames = CultureInfo.CurrentCulture.DateTimeFormat.MonthNames;
 
         static void Main(string[] args)
@@ -42,7 +45,7 @@ namespace SearchingSort
                         DisplayDirectoryMenu();
                         break;
                     default:
-                        //Console.WriteLine("Selection not correct");
+                        Console.WriteLine("Selection not correct");
                         break;
                 }
             } while (selection != "3");
@@ -89,27 +92,27 @@ namespace SearchingSort
                         DisplaySearchMenu();
                         break;
                     case "2":
-                        // display search menu
+                        // display binary tree search menu
                         DisplayBinarySearchMenu();
                         break;
                     case "3":
-                        // display sort menu
-                        DisplayMainMenu(true,true);
+                        // display sort menu - quicksort asc
+                        DisplaySortMenu(true,true);
                         break;
                     case "4":
-                        // display sort menu
-                        DisplayMainMenu(false, true);
+                        // display sort menu - quicksort dsc
+                        DisplaySortMenu(false, true);
                         break;
                     case "5":
-                        // display sort menu
-                        DisplayMainMenu(true,false);
+                        // display sort menu - insertionsort asc
+                        DisplaySortMenu(true,false);
                         break;
                     case "6":
-                        // display sort menu
-                        DisplayMainMenu(false,false);
+                        // display sort menu - insertionsort dsc
+                        DisplaySortMenu(false,false);
                         break;
                     case "7":
-                        // display sort menu
+                        // display the min and max for all fields
                         fm.GetMinMaxMedian("Year");
                         fm.GetMinMaxMedian("Month");
                         fm.GetMinMaxMedian("WS1_AF");
@@ -125,15 +128,14 @@ namespace SearchingSort
                         break;
                     default:
                         break;
-                        // etc..
                 }
             } while (selection != "8");
         }
 
-        private static void DisplayMainMenu(Boolean isAscending,Boolean isQuickSort)
+        private static void DisplaySortMenu(Boolean isAscending,Boolean isQuickSort)
         {
             string selection = "0";
-            TimeSpan timetaken;
+            fm.numberOfSwaps = 0; // reset the number of swaps
             do
             {
                 Console.WriteLine("Please type in which of the following fields you would like to sort\n");
@@ -143,7 +145,7 @@ namespace SearchingSort
                 if (selection == "exit") break;
                 try
                 {
-                    DateTime time = System.DateTime.Now;
+                    //performs sort based on given parameters 
                     if (isQuickSort)
                     {
                         fm.QuickSort(isAscending, selection);
@@ -152,26 +154,24 @@ namespace SearchingSort
                     {
                         fm.insertionsort(isAscending, selection);
                     }
-                    timetaken = System.DateTime.Now.Subtract(time);
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e.Message);
                     break;
                 }
-               
+                //print the output of the sort
                 foreach (WeatherData wd in fm.WeatherDataArray)
                 {
                     Console.WriteLine(wd.ToString());
                 }
-                Console.WriteLine("Time taken: " + timetaken.Milliseconds+"ms");
+                Console.WriteLine("Number of swaps:" + fm.numberOfSwaps);
             } while (selection != "exit");
         }
         private static void DisplaySearchMenu()
         {
             string selection = "";
             Double SearchKey = 0;
-            TimeSpan timetaken;
             do
             {
                 Console.WriteLine("Please type in which of the following fields you would like to search\n");
@@ -181,8 +181,9 @@ namespace SearchingSort
                 Console.WriteLine("What you like to search for?\n");
                 try
                 {
+
                     String searchString = Console.ReadLine();
-                    if (string.Equals(selection, "Month", StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals(selection, "Month", StringComparison.OrdinalIgnoreCase)) //special case for searching for months
                     {
                         SearchKey = convertMonthtoNumber(searchString);
                     }
@@ -190,9 +191,7 @@ namespace SearchingSort
                     {
                         SearchKey = Convert.ToDouble(searchString);
                     }
-                    DateTime time = System.DateTime.Now;
                     List<WeatherData> wd = fm.SeqSearch(SearchKey, selection);
-                    timetaken = System.DateTime.Now.Subtract(time);
                     if (wd.Count == 0)
                     {
                         Console.WriteLine("No items were found!");
@@ -205,7 +204,6 @@ namespace SearchingSort
                             Console.WriteLine(w.ToString());
                         }
                     }
-                    Console.WriteLine("Time taken: " + timetaken.Milliseconds + "ms");
                 }
                 catch (Exception e)
                 {
@@ -218,7 +216,6 @@ namespace SearchingSort
         {
             string selection = "";
             Double SearchKey = 0;
-            TimeSpan timetaken;
             do
             {
                 Console.WriteLine("Please type in which of the following fields you would like to search\n");
@@ -229,7 +226,7 @@ namespace SearchingSort
                 try
                 {
                     String searchString = Console.ReadLine();
-                    if (string.Equals(selection, "Month", StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals(selection, "Month", StringComparison.OrdinalIgnoreCase)) // special case for searching for months
                     {
                         SearchKey = convertMonthtoNumber(searchString);
                     }
@@ -237,59 +234,25 @@ namespace SearchingSort
                     {
                         SearchKey = Convert.ToDouble(searchString);
                     }
+
                     int lowerBound;
                     int upperBound;
-                    DateTime time = System.DateTime.Now;
                     fm.BinarySearch(SearchKey, selection ,out lowerBound, out upperBound);
-                    timetaken = System.DateTime.Now.Subtract(time);
-                    if (lowerBound > upperBound)
+
+                    if (lowerBound > upperBound)// no results found
                     {
                         Console.WriteLine("No results found!");
                     }
-                    while (lowerBound <= upperBound)
+                    while (lowerBound <= upperBound) // results found so print them out
                     {
                         Console.WriteLine(fm.WeatherDataArray[lowerBound].ToString());
                         lowerBound++;
                     }
-                    Console.WriteLine("Time taken: " + timetaken.Milliseconds + "ms");
                 }
                 catch (Exception e)
                 {
                     if (selection == "exit") break;
                     Console.WriteLine(e.Message);
-                }
-            } while (selection != "exit");
-        }
-
-        private static void DisplayMinMaxMenu()
-        {
-            string selection = "0";
-            do
-            {
-                Console.WriteLine("Please type in which of the following fields you would like to find the min, max and median of\n");
-                Console.WriteLine("Year, Month, WS1_AF, WS1_Rain, WS1_Sun, WS1_TMax, WS1_Tmin, WS2_AF, WS2_Rain, WS2_Sun, WS2_TMax, WS2_Tmin");
-                Console.WriteLine("Type exit to return to the previous menu\n");
-                selection = Console.ReadLine();
-                try
-                {
-                    fm.GetMinMaxMedian("Year");
-                    fm.GetMinMaxMedian("Month");
-                    fm.GetMinMaxMedian("WS1_AF");
-                    fm.GetMinMaxMedian("WS1_Rain");
-                    fm.GetMinMaxMedian("WS1_Sun");
-                    fm.GetMinMaxMedian("WS1_TMax");
-                    fm.GetMinMaxMedian("WS1_Tmin");
-                    fm.GetMinMaxMedian("WS2_AF");
-                    fm.GetMinMaxMedian("WS2_Rain");
-                    fm.GetMinMaxMedian("WS2_Sun");
-                    fm.GetMinMaxMedian("WS2_TMax");
-                    fm.GetMinMaxMedian("WS2_Tmin");
-                }
-                catch (Exception e)
-                {
-                    if (selection == "exit") break;
-                    Console.WriteLine(e.Message);
-                    break;
                 }
             } while (selection != "exit");
         }
