@@ -113,18 +113,7 @@ namespace SearchingSort
                         break;
                     case "7":
                         // display the min and max for all fields
-                        fm.GetMinMaxMedian("Year");
-                        fm.GetMinMaxMedian("Month");
-                        fm.GetMinMaxMedian("WS1_AF");
-                        fm.GetMinMaxMedian("WS1_Rain");
-                        fm.GetMinMaxMedian("WS1_Sun");
-                        fm.GetMinMaxMedian("WS1_TMax");
-                        fm.GetMinMaxMedian("WS1_Tmin");
-                        fm.GetMinMaxMedian("WS2_AF");
-                        fm.GetMinMaxMedian("WS2_Rain");
-                        fm.GetMinMaxMedian("WS2_Sun");
-                        fm.GetMinMaxMedian("WS2_TMax");
-                        fm.GetMinMaxMedian("WS2_Tmin");
+                        fm.OutPutToWebPageMinMaxMedian();
                         break;
                     default:
                         break;
@@ -135,7 +124,7 @@ namespace SearchingSort
         private static void DisplaySortMenu(Boolean isAscending,Boolean isQuickSort)
         {
             string selection = "0";
-            fm.numberOfSwaps = 0; // reset the number of swaps
+            fm.NumberOfSteps = 0; // reset the Number of steps
             do
             {
                 Console.WriteLine("Please type in which of the following fields you would like to sort\n");
@@ -161,17 +150,15 @@ namespace SearchingSort
                     break;
                 }
                 //print the output of the sort
-                foreach (WeatherData wd in fm.WeatherDataArray)
-                {
-                    Console.WriteLine(wd.ToString());
-                }
-                Console.WriteLine("Number of swaps:" + fm.numberOfSwaps);
+                Console.WriteLine("Number of steps:" + fm.NumberOfSteps);
+                fm.OutPutToWebPage();
             } while (selection != "exit");
         }
         private static void DisplaySearchMenu()
         {
             string selection = "";
             Double SearchKey = 0;
+            fm.NumberOfSteps = 0; // reset the Number of steps
             do
             {
                 Console.WriteLine("Please type in which of the following fields you would like to search\n");
@@ -179,6 +166,7 @@ namespace SearchingSort
                 Console.WriteLine("Type exit to return to the previous menu\n");
                 selection = Console.ReadLine();
                 Console.WriteLine("What you like to search for?\n");
+                Console.WriteLine("Type exit to return to the previous menu\n");
                 try
                 {
 
@@ -192,17 +180,14 @@ namespace SearchingSort
                         SearchKey = Convert.ToDouble(searchString);
                     }
                     List<WeatherData> wd = fm.SeqSearch(SearchKey, selection);
+                    Console.WriteLine("Number of steps:" + fm.NumberOfSteps);
                     if (wd.Count == 0)
                     {
                         Console.WriteLine("No items were found!");
                     }
                     else
                     {
-                        //print the output of the search
-                        foreach (WeatherData w in wd)
-                        {
-                            Console.WriteLine(w.ToString());
-                        }
+                        fm.OutPutToWebPage(wd);
                     }
                 }
                 catch (Exception e)
@@ -216,6 +201,7 @@ namespace SearchingSort
         {
             string selection = "";
             Double SearchKey = 0;
+            fm.NumberOfSteps = 0; // reset the Number of steps
             do
             {
                 Console.WriteLine("Please type in which of the following fields you would like to search\n");
@@ -223,6 +209,7 @@ namespace SearchingSort
                 Console.WriteLine("Type exit to return to the previous menu\n");
                 selection = Console.ReadLine();
                 Console.WriteLine("What you like to search for?\n");
+                Console.WriteLine("Type exit to return to the previous menu\n");
                 try
                 {
                     String searchString = Console.ReadLine();
@@ -243,11 +230,11 @@ namespace SearchingSort
                     {
                         Console.WriteLine("No results found!");
                     }
-                    while (lowerBound <= upperBound) // results found so print them out
+                    else
                     {
-                        Console.WriteLine(fm.WeatherDataArray[lowerBound].ToString());
-                        lowerBound++;
+                        fm.OutPutToWebPage(lowerBound, upperBound);
                     }
+                    Console.WriteLine("Number of steps:" + fm.NumberOfSteps);
                 }
                 catch (Exception e)
                 {

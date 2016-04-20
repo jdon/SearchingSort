@@ -15,12 +15,12 @@ namespace SearchingSort
         Random rnd = new Random();
         long numberOfLines;
         string[] MonthNames = CultureInfo.CurrentCulture.DateTimeFormat.MonthNames;
-        public int numberOfSwaps { get; set; }
+        public int NumberOfSteps { get; set; }
 
     public Boolean inputFiles(String Dir) // method for inputting the text files
         {
             Boolean FilesValid = true;
-            numberOfSwaps = 0;
+            NumberOfSteps = 0;
             try
             {
                
@@ -89,6 +89,7 @@ namespace SearchingSort
             //loop throught each item in the array
            for (int i = 0; i < WeatherDataArray.Length; i++)
            {
+                NumberOfSteps++;
                if (GetData(i, WhatToSearch) == WhatToFind)
                {
                    // they match so add to array;
@@ -101,19 +102,9 @@ namespace SearchingSort
         public void BinarySearch(Double WhatToFind, String WhatToSearch, out int lowerindex, out int upperindex)
         {
             QuickSort(true, WhatToSearch); // sort the array before performing binary searches
+            NumberOfSteps = 0;
             upperindex = UpperBound(WhatToFind, 0, WeatherDataArray.Length - 1, WhatToSearch); // returns the last result from the search
             lowerindex = LowerBound(WhatToFind, 0, WeatherDataArray.Length - 1, WhatToSearch); // returns the first result from the search
-        }
-
-        public void GetMinMaxMedian(String Selection) // returns a string of the min, max and median value of the array
-        {
-            QuickSort(true, Selection);
-            Double min = GetData(0, Selection);
-            Double max = GetData(WeatherDataArray.Length-1, Selection);
-            Double median = (GetData(511, Selection) + GetData(512, Selection))/2;
-            Console.WriteLine(Selection+"\nThe min value is:" + min +"\n"+ WeatherDataArray[0].ToString()+ 
-                " \nThe max value is:" + max+"\n" + WeatherDataArray[WeatherDataArray.Length - 1].ToString() + 
-                " \nThe median value is " + median+"\n"+WeatherDataArray[511].ToString()+"\n" + WeatherDataArray[512].ToString()+"\n\n");
         }
 
         public void insertionsort(Boolean ascending, String WhatToSort) // insertion sort method
@@ -129,7 +120,7 @@ namespace SearchingSort
                     {
                         WeatherDataArray[j + 1] = WeatherDataArray[j];
                         j = j - 1;
-                        numberOfSwaps++;
+                        NumberOfSteps++;
                     }
                 }
                 else
@@ -138,11 +129,11 @@ namespace SearchingSort
                     {
                         WeatherDataArray[j + 1] = WeatherDataArray[j];
                         j = j - 1;
-                        numberOfSwaps++;
+                        NumberOfSteps++;
                     }
                 }
                 WeatherDataArray[j + 1] = weatherDataofX;
-                numberOfSwaps++;
+                NumberOfSteps++;
             }
         }
 
@@ -183,7 +174,7 @@ namespace SearchingSort
                     WeatherDataArray[index2] = temp;
                     index++;
                     index2--;
-                    numberOfSwaps++;
+                    NumberOfSteps++;
                 }
             } while (index <= index2);
             if (left < index2) Quick_Sort(Ascending,left, index2, WhatToSort);
@@ -193,6 +184,7 @@ namespace SearchingSort
 
         int UpperBound(Double WhatToFind, int low, int high,String datatype)
         {
+            NumberOfSteps++;
             if (low > high) return low - 1;
             int mid = (low + high) / 2;
             if (GetData(mid, datatype) > WhatToFind)
@@ -206,6 +198,7 @@ namespace SearchingSort
         }
         int LowerBound(Double WhatToFind, int low, int high,String datatype)
         {
+            NumberOfSteps++;
             if (low > high) return low;
             int mid = (low + high) / 2;
             if (WhatToFind <= GetData(mid, datatype))
@@ -270,6 +263,172 @@ namespace SearchingSort
                 return WeatherDataArray[index].WS2_Tmin;
             }
             throw new System.ArgumentException("Not a valid data type!", data);
+        }
+        public string createtable(String selection)
+        {
+            QuickSort(true, selection);
+            Double min = GetData(0, selection);
+            Double max = GetData(WeatherDataArray.Length - 1, selection);
+            Double median = (GetData(511, selection) + GetData(512, selection)) / 2;
+            List<WeatherData> WeatherArray = new List<WeatherData>();
+            WeatherArray.Add(WeatherDataArray[0]);
+            WeatherArray.Add(WeatherDataArray[WeatherDataArray.Length - 1]);
+            WeatherArray.Add(WeatherDataArray[511]);
+            WeatherArray.Add(WeatherDataArray[512]);
+            String html= "<h2>"+selection+"</h2>";
+            foreach (WeatherData wd in WeatherArray)
+            {
+                if (wd == WeatherDataArray[0])
+                {
+                    html += "Min is "+min;
+                }
+                else if (wd == WeatherDataArray[WeatherDataArray.Length - 1])
+                {
+                    html += "Max is "+ max;
+                }
+                else
+                {
+                    html += "Median is "+median;
+                }
+                html += "<table style='width: 100 %'><tr><th>Year</th> <th>Month</th> <th>Ws1_af</th> <th>Ws1_rain</th> <th>Ws1_sun</th> <th>Ws1_tmax</th> <th>Ws1_tmin</th> <th>Ws2_af</th> <th>Ws2_rain</th> <th>Ws2_sun</th> <th>Ws2_tmax</th> <th>Ws2_tmin</th>";
+                html += "<tr>";
+                html += "<td>" + wd.Year + "</td>";
+                html += "<td>" + Program.convertNumbertoMonth(Convert.ToInt32(wd.Month)) + "</td>";
+                html += "<td>" + wd.WS1_AF + "</td>";
+                html += "<td>" + wd.WS1_Rain + "</td>";
+                html += "<td>" + wd.WS1_Sun + "</td>";
+                html += "<td>" + wd.WS1_TMax + "</td>";
+                html += "<td>" + wd.WS1_Tmin + "</td>";
+                html += "<td>" + wd.WS2_AF + "</td>";
+                html += "<td>" + wd.WS2_Rain + "</td>";
+                html += "<td>" + wd.WS2_Sun + "</td>";
+                html += "<td>" + wd.WS2_TMax + "</td>";
+                html += "<td>" + wd.WS2_Tmin + "</td>";
+                html += "</tr>";
+                html += "</table>";
+            }
+            return html;
+        }
+        public void OutPutToWebPageMinMaxMedian()
+        {
+            String html = "<!DOCTYPE html><html><head><title>Sorting Output</title><style>table, th, td {    border: 1px solid black;    border-collapse: collapse;}th, td {    padding: 5px;}</style></head><body> ";
+            html += createtable("Year");
+            html += createtable("Month");
+            html += createtable("ws1_af");
+            html += createtable("ws1_rain");
+            html += createtable("ws1_sun");
+            html += createtable("ws1_tmax");
+            html += createtable("ws1_tmin");
+            html += createtable("ws2_af");
+            html += createtable("ws2_rain");
+            html += createtable("ws2_sun");
+            html += createtable("ws2_tmax");
+            html += createtable("ws2_tmin");
+            html += "</body></html>";
+            try
+            {
+                File.WriteAllText(Directory.GetCurrentDirectory() + "\\output.html", html);
+                System.Diagnostics.Process.Start(Directory.GetCurrentDirectory() + "\\output.html");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Could not save or open the webpage due to the following error" + e.ToString());
+            }
+        }
+        public void OutPutToWebPage()
+        {
+            String html = "<!DOCTYPE html><html><head><title>Sorting Output</title><style>table, th, td {    border: 1px solid black;    border-collapse: collapse;}th, td {    padding: 5px;}</style></head><body> <table style='width: 100 %'><tr><th>Year</th> <th>Month</th> <th>Ws1_af</th> <th>Ws1_rain</th> <th>Ws1_sun</th> <th>Ws1_tmax</th> <th>Ws1_tmin</th> <th>Ws2_af</th> <th>Ws2_rain</th> <th>Ws2_sun</th> <th>Ws2_tmax</th> <th>Ws2_tmin</th>";
+            foreach (WeatherData wd in WeatherDataArray)
+            {
+                html += "<tr>";
+                html += "<td>" + wd.Year + "</td>";
+                html += "<td>" + Program.convertNumbertoMonth(Convert.ToInt32(wd.Month)) + "</td>";
+                html += "<td>" + wd.WS1_AF + "</td>";
+                html += "<td>" + wd.WS1_Rain + "</td>";
+                html += "<td>" + wd.WS1_Sun + "</td>";
+                html += "<td>" + wd.WS1_TMax + "</td>";
+                html += "<td>" + wd.WS1_Tmin + "</td>";
+                html += "<td>" + wd.WS2_AF + "</td>";
+                html += "<td>" + wd.WS2_Rain + "</td>";
+                html += "<td>" + wd.WS2_Sun + "</td>";
+                html += "<td>" + wd.WS2_TMax + "</td>";
+                html += "<td>" + wd.WS2_Tmin + "</td>";
+                html += "</tr>";
+            }
+            html += "</table></body></html>";
+            try
+            {
+                File.WriteAllText(Directory.GetCurrentDirectory() + "\\output.html", html);
+                System.Diagnostics.Process.Start(Directory.GetCurrentDirectory() + "\\output.html");
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine("Could not save or open the webpage due to the following error" + e.ToString());
+            }
+        }
+        public void OutPutToWebPage(List<WeatherData> WeatherArray)
+        {
+            String html = "<!DOCTYPE html><html><head><title>Searchin Output</title><style>table, th, td {    border: 1px solid black;    border-collapse: collapse;}th, td {    padding: 5px;}</style></head><body> <table style='width: 100 %'><tr><th>Year</th> <th>Month</th> <th>Ws1_af</th> <th>Ws1_rain</th> <th>Ws1_sun</th> <th>Ws1_tmax</th> <th>Ws1_tmin</th> <th>Ws2_af</th> <th>Ws2_rain</th> <th>Ws2_sun</th> <th>Ws2_tmax</th> <th>Ws2_tmin</th>";
+            foreach (WeatherData wd in WeatherArray)
+            {
+                html += "<tr>";
+                html += "<td>" + wd.Year + "</td>";
+                html += "<td>" + Program.convertNumbertoMonth(Convert.ToInt32(wd.Month)) + "</td>";
+                html += "<td>" + wd.WS1_AF + "</td>";
+                html += "<td>" + wd.WS1_Rain + "</td>";
+                html += "<td>" + wd.WS1_Sun + "</td>";
+                html += "<td>" + wd.WS1_TMax + "</td>";
+                html += "<td>" + wd.WS1_Tmin + "</td>";
+                html += "<td>" + wd.WS2_AF + "</td>";
+                html += "<td>" + wd.WS2_Rain + "</td>";
+                html += "<td>" + wd.WS2_Sun + "</td>";
+                html += "<td>" + wd.WS2_TMax + "</td>";
+                html += "<td>" + wd.WS2_Tmin + "</td>";
+                html += "</tr>";
+            }
+            html += "</table></body></html>";
+            try
+            {
+                File.WriteAllText(Directory.GetCurrentDirectory() + "\\output.html", html);
+                System.Diagnostics.Process.Start(Directory.GetCurrentDirectory() + "\\output.html");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Could not save or open the webpage due to the following error" + e.ToString());
+            }
+        }
+        public void OutPutToWebPage(int lowerBound, int upperBound)
+        {
+            String html = "<!DOCTYPE html><html><head><title>Searching Output</title><style>table, th, td {    border: 1px solid black;    border-collapse: collapse;}th, td {    padding: 5px;}</style></head><body> <table style='width: 100 %'><tr><th>Year</th> <th>Month</th> <th>Ws1_af</th> <th>Ws1_rain</th> <th>Ws1_sun</th> <th>Ws1_tmax</th> <th>Ws1_tmin</th> <th>Ws2_af</th> <th>Ws2_rain</th> <th>Ws2_sun</th> <th>Ws2_tmax</th> <th>Ws2_tmin</th>";
+            while (lowerBound <= upperBound) // results found so print them out
+            {
+                WeatherData wd = WeatherDataArray[lowerBound];
+                html += "<tr>";
+                html += "<td>" + wd.Year + "</td>";
+                html += "<td>" + Program.convertNumbertoMonth(Convert.ToInt32(wd.Month)) + "</td>";
+                html += "<td>" + wd.WS1_AF + "</td>";
+                html += "<td>" + wd.WS1_Rain + "</td>";
+                html += "<td>" + wd.WS1_Sun + "</td>";
+                html += "<td>" + wd.WS1_TMax + "</td>";
+                html += "<td>" + wd.WS1_Tmin + "</td>";
+                html += "<td>" + wd.WS2_AF + "</td>";
+                html += "<td>" + wd.WS2_Rain + "</td>";
+                html += "<td>" + wd.WS2_Sun + "</td>";
+                html += "<td>" + wd.WS2_TMax + "</td>";
+                html += "<td>" + wd.WS2_Tmin + "</td>";
+                html += "</tr>";
+                lowerBound++;
+            }
+            html += "</table></body></html>";
+            try
+            {
+                File.WriteAllText(Directory.GetCurrentDirectory() + "\\output.html", html);
+                System.Diagnostics.Process.Start(Directory.GetCurrentDirectory() + "\\output.html");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Could not save or open the webpage due to the following error" + e.ToString());
+            }
         }
     }
 }
