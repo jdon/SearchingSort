@@ -15,6 +15,7 @@ namespace SearchingSort
         private static FileManager fm = new FileManager();
         //get a list of the months for use of converting month name to a number
         private static string[] MonthNames = CultureInfo.CurrentCulture.DateTimeFormat.MonthNames;
+        private static string DirectoryofData;
 
         static void Main(string[] args)
         {
@@ -22,33 +23,20 @@ namespace SearchingSort
             do
             {
                 Console.WriteLine("Select where your files are\n");
-                Console.WriteLine("1. Current directory");
-                Console.WriteLine("2. Enter a directory");
-                Console.WriteLine("3. Quit");
+                Console.WriteLine("1. Enter a directory");
+                Console.WriteLine("2. Quit");
                 selection = Console.ReadLine();
 
                 switch (selection)
                 {
                     case "1":
-                        FileManager fm = new FileManager();
-                        if (fm.inputFiles(Directory.GetCurrentDirectory()) == false)
-                        {
-                            Console.WriteLine("\nFiles not found!\n");
-                            break;
-                        }
-                        else
-                        {
-                            DisplaySearchorSortMenu();
-                        }
-                        break;
-                    case "2":
                         DisplayDirectoryMenu();
                         break;
                     default:
                         Console.WriteLine("Selection not correct");
                         break;
                 }
-            } while (selection != "3");
+            } while (selection != "2");
         }
 
         private static void DisplayDirectoryMenu()
@@ -66,6 +54,7 @@ namespace SearchingSort
                 FilesCorrect = fm.inputFiles(@dir);
             }
             //correct files found and are valid
+            DirectoryofData = dir;
             DisplaySearchorSortMenu();
         }
 
@@ -82,7 +71,8 @@ namespace SearchingSort
                 Console.WriteLine("5. InsertionSort - Ascending");
                 Console.WriteLine("6. InsertionSort - Descending");
                 Console.WriteLine("7. Show min, max and median value");
-                Console.WriteLine("8. Quit");
+                Console.WriteLine("8. Reset data");
+                Console.WriteLine("9. Quit");
                 selection = Console.ReadLine();
 
                 switch (selection)
@@ -115,10 +105,29 @@ namespace SearchingSort
                         // display the min and max for all fields
                         fm.OutPutToWebPageMinMaxMedian();
                         break;
+                    case "8":
+                        // display the min and max for all fields
+                        Boolean FilesCorrect = fm.inputFiles(DirectoryofData);
+                        if (!FilesCorrect)
+                        {
+                            Console.WriteLine("Previous files have been changed can no longer read them, please select a new directory");
+                        }
+                        while (!FilesCorrect)
+                        {
+                            //input not valid
+                            Console.WriteLine("Invalid input, Please enter the directory of the files");
+                            Console.WriteLine("Type exit to return to the previous menu\n");
+                            string dir = Console.ReadLine();
+                            if (dir == "exit") return;
+                            FilesCorrect = fm.inputFiles(@dir);
+                        }
+                        Console.WriteLine("Data has been reset");
+                        fm.OutPutToWebPage();
+                        break;
                     default:
                         break;
                 }
-            } while (selection != "8");
+            } while (selection != "9");
         }
 
         private static void DisplaySortMenu(Boolean isAscending,Boolean isQuickSort)
@@ -146,7 +155,7 @@ namespace SearchingSort
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.Message);
+                    //Console.WriteLine(e.Message);
                     break;
                 }
                 //print the output of the sort
@@ -179,15 +188,31 @@ namespace SearchingSort
                     {
                         SearchKey = Convert.ToDouble(searchString);
                     }
-                    List<WeatherData> wd = fm.SeqSearch(SearchKey, selection);
+                    fm.SeqSearch(SearchKey, selection);
                     Console.WriteLine("Number of steps:" + fm.NumberOfSteps);
-                    if (wd.Count == 0)
+                    if (fm.WeatherDataArray.Length == 0)
                     {
                         Console.WriteLine("No items were found!");
+                        Console.WriteLine("Reseting data!");
+                        Boolean FilesCorrect = fm.inputFiles(DirectoryofData);
+                        if (!FilesCorrect)
+                        {
+                            Console.WriteLine("Previous files have been changed or can no longer read them, please select a new directory");
+                        }
+                        while (!FilesCorrect)
+                        {
+                            //input not valid
+                            Console.WriteLine("Invalid input, Please enter the directory of the files");
+                            Console.WriteLine("Type exit to return to the previous menu\n");
+                            string dir = Console.ReadLine();
+                            if (dir == "exit") return;
+                            FilesCorrect = fm.inputFiles(@dir);
+                        }
+                        Console.WriteLine("Data has been reset!");
                     }
                     else
                     {
-                        fm.OutPutToWebPage(wd);
+                        fm.OutPutToWebPage();
                     }
                 }
                 catch (Exception e)
@@ -222,17 +247,30 @@ namespace SearchingSort
                         SearchKey = Convert.ToDouble(searchString);
                     }
 
-                    int lowerBound;
-                    int upperBound;
-                    fm.BinarySearch(SearchKey, selection ,out lowerBound, out upperBound);
-
-                    if (lowerBound > upperBound)// no results found
+                    Boolean isempty = fm.BinarySearch(SearchKey, selection);
+                    if (!isempty)
                     {
-                        Console.WriteLine("No results found!");
+                        fm.OutPutToWebPage();
                     }
                     else
                     {
-                        fm.OutPutToWebPage(lowerBound, upperBound);
+                        Console.WriteLine("No results found!");
+                        Console.WriteLine("Reseting data!");
+                        Boolean FilesCorrect = fm.inputFiles(DirectoryofData);
+                        if (!FilesCorrect)
+                        {
+                            Console.WriteLine("Previous files have been changed or can no longer read them, please select a new directory");
+                        }
+                        while (!FilesCorrect)
+                        {
+                            //input not valid
+                            Console.WriteLine("Invalid input, Please enter the directory of the files");
+                            Console.WriteLine("Type exit to return to the previous menu\n");
+                            string dir = Console.ReadLine();
+                            if (dir == "exit") return;
+                            FilesCorrect = fm.inputFiles(@dir);
+                        }
+                        Console.WriteLine("Data has been reset!");
                     }
                     Console.WriteLine("Number of steps:" + fm.NumberOfSteps);
                 }
